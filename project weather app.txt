@@ -1,0 +1,130 @@
+﻿
+ 
+import com.sun.deploy.panel.JSmartTextArea;
+
+import javax.swing.*;
+import  java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class weather extends JFrame {
+    private JComboBox lang;
+    private JButton B1,B2;
+    private TextField city;
+    private JSmartTextArea l3d,l7d,l10d;
+    private int check=0,test=0;
+    private String[] st={"English","Français","日本語","Español"},s2={"Enter a City (E.g. London, San Francisco etc...)","Entrer une ville (E.g. London, San Francisco etc...","都市（例えば、ロンドン、サンフランシスコなど...）を入力します","Introduce la ciudad (Por ejemplo Londres, San Francisco etc ... )"};
+    private String[] day={"Days","Journées","日々","Días"},submit={"Submit","Soumettre","提出します","Enviar"};
+    private String[] lan={"Select Your Language","Choisissez votre langue","あなたの言語を選択","Elige tu idioma"};
+    public String cityname;
+    public JLabel l1,l2,l3,l7,l10;
+    private url c=new url();
+    public weather(){
+        setLayout(null);
+        l1=new JLabel("Select Your Language");
+        l1.setBounds(10,13,223,29);
+        l3d=new JSmartTextArea();
+        l3d.setEditable(false);
+        l3d.setBounds(10,190,414,78);
+        l7d=new JSmartTextArea();
+        l7d.setEditable(false);
+        l7d.setBounds(10,305,415,78);
+        l10d=new JSmartTextArea();
+        l10d.setEditable(false);
+        l10d.setBounds(10,434,414,78);
+        lang =new JComboBox(st);
+        lang.setBounds(243,15,149,25);
+        B1=new JButton("Submit");
+        B1.setBounds(144,53,123,29);
+        l2=new JLabel("Enter a City (E.g. London, San Francisco etc...)");
+        l2.setBounds(10,91,414,38);
+        city = new TextField();
+        city.setBounds(10,126,183,29);
+        B2=new JButton("Submit");
+        B2.setBounds(226,126,170,29);
+        l3=new JLabel("3 Days");
+        l3.setBounds(10,166,78,25);
+        l7=new JLabel("7 Days");
+        l7.setBounds(10,279,57,29);
+        l10=new JLabel("10 Days");
+        l10.setBounds(10,394,57,29);
+        add(l1);
+        add(lang);
+        add(B1);
+        add(l2);
+        add(city);
+        add(B2);
+        add(l3d);
+        add(l7d);
+        add(l10d);
+        add(l3);
+        add(l7);
+        add(l10);
+        B1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            check=lang.getSelectedIndex();
+                l2.setText(s2[check]);
+                l3.setText("3"+day[check]);
+                l7.setText("7"+day[check]);
+                l10.setText("10"+day[check]);
+                B1.setText(submit[check]);
+                B2.setText(submit[check]);
+                l1.setText(lan[check]);
+                if(test==1)
+                {
+                    try {
+                        if(c.urlcall(cityname,check)==0) {
+                            l3d.setText(c.l3);
+                            l7d.setText(c.l7);
+                            l10d.setText(c.l10);
+                            test=1;
+                        }
+
+                    } catch (Exception e1) {
+                        l3d.setText("");
+                        l7d.setText("");
+                        l10d.setText("");
+                        JOptionPane.showMessageDialog(null,"NETWORK ERROR!!");
+                    }
+                }
+            }
+        });
+        B2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    cityname = city.getText();
+                    cityname = cityname.replaceAll(" ", "-");
+                    cityname = cityname.substring(0, 1).toUpperCase() + cityname.substring(1);
+
+                    if(c.urlcall(cityname,check)==0) {
+                        l3d.setText(c.l3);
+                        l7d.setText(c.l7);
+                        l10d.setText(c.l10);
+                        test=1;
+                    }
+
+                } catch (Exception e1) {
+                    l3d.setText("");
+                    l7d.setText("");
+                    l10d.setText("");
+                    JOptionPane.showMessageDialog(null,"ERROR!! \n Please enter a valid city!!");
+                    test=0;
+                }
+            }
+        });
+
+    }
+
+    public static  void main (String args[]) {
+       weather a = new weather();
+        a.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        a.setBounds(100,100,450,573);
+        a.setVisible(true);
+        a.setResizable(false);
+        a.setTitle("Weather Applet");
+    }
+
+}
